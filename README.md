@@ -1,67 +1,91 @@
-# Music Lyrics Synchronization Player
+# LRC Sync Player
 
-Синхронизированный проигрыватель лирики песен с анимированным выводом текста.
+**LRC Sync Player** is a small Python terminal application for playing an audio file while displaying synchronized lyrics from an `.lrc` file.
 
-## Описание
+The project is focused on a simple, readable implementation of timestamp-based lyric playback: audio is handled with `pygame`, while terminal output and text animation are handled with `rich`.
 
-Этот проект представляет собой Python-приложение для синхронизированного воспроизведения музыки с отображением лирики в реальном времени. Приложение использует файлы LRC (лирика с временными метками) для синхронизации текста с аудио.
+## Features
 
-## Возможности
+- Play local MP3 audio files.
+- Parse `.lrc` lyrics with timestamps.
+- Display the current lyric line in sync with playback.
+- Animate lyrics with a configurable typewriter effect.
+- Apply a manual sync offset when lyrics are slightly early or late.
+- Render formatted terminal output with `rich`.
 
-- 🎵 Воспроизведение аудио файлов (MP3)
-- 📝 Синхронизированное отображение лирики из LRC файлов
-- ⌨️ Анимированный печатающий эффект для текста
-- 🎨 Цветной вывод в консоль
-- ⏰ Настраиваемые параметры синхронизации
-
-## Требования
+## Tech stack
 
 - Python 3.7+
 - pygame
 - rich
+- LRC timestamp format
 
-## Установка
+## Installation
 
-1. Клонируйте репозиторий:
+Clone the repository:
+
 ```bash
 git clone https://github.com/akaAnger/1337-5yn6.git
 cd 1337-5yn6
 ```
 
-2. Установите зависимости:
+Install dependencies:
+
 ```bash
 pip install -r requirements.txt
 ```
 
-## Использование
+## Usage
 
-1. Поместите ваш MP3 файл как `song.mp3`
-2. Поместите LRC файл с лирикой как `lyrics.lrc`
-3. Запустите приложение:
+Place your files in the project directory:
+
+```text
+song.mp3
+lyrics.lrc
+```
+
+Run the player:
 
 ```bash
 python sync_player.py
 ```
 
-## Формат LRC файла
+## LRC format
 
+```lrc
+[00:15.30]First lyric line
+[00:18.50]Second lyric line
+[00:22.10]Third lyric line
 ```
-[00:15.30]Первая строка лирики
-[00:18.50]Вторая строка лирики
-[00:22.10]Третья строка лирики
-```
 
-## Параметры
+## Configuration
 
-- `audio_path`: Путь к аудио файлу
-- `lrc_path`: Путь к LRC файлу
-- `offset_sec`: Смещение синхронизации в секундах
-- `cps`: Скорость печатания (символов в секунду)
+The player supports the following runtime parameters in code:
 
-## Лицензия
+| Parameter | Purpose |
+| --- | --- |
+| `audio_path` | Path to the local audio file. |
+| `lrc_path` | Path to the `.lrc` lyrics file. |
+| `offset_sec` | Manual sync offset in seconds. |
+| `cps` | Typewriter animation speed in characters per second. |
 
-MIT License
+## Project scope
 
-## Автор
+This is a compact utility and learning project. It is useful as a reference for:
 
-[akaAnger](https://github.com/akaAnger)
+- parsing timestamped text files;
+- synchronizing UI output with audio playback;
+- building terminal interfaces with `rich`;
+- working with local media playback in Python.
+
+## Roadmap
+
+- Add command-line arguments for file paths and offset.
+- Add pause/resume controls.
+- Add support for more audio formats where available through `pygame`.
+- Add tests for LRC parsing and timestamp matching.
+- Rename the repository to a clearer name, for example `lrc-sync-player`.
+
+## License
+
+MIT
