@@ -1,45 +1,72 @@
-# Быстрый старт
+# Quickstart
 
-## Установка и запуск
+## Install
 
-1. Убедитесь, что у вас установлен Python 3.7+
-2. Установите зависимости:
-   ```bash
-   pip install pygame rich
-   ```
-
-3. Подготовьте файлы:
-   - Поместите ваш MP3 файл в папку проекта как `song.mp3`
-   - Создайте LRC файл с лирикой как `lyrics.lrc`
-
-4. Запустите:
-   ```bash
-   python sync_player.py
-   ```
-
-## Создание LRC файла
-
-LRC файл - это простой текстовый файл с временными метками:
-
-```
-[00:15.30]Первая строка лирики
-[00:18.50]Вторая строка лирики
-[00:22.10]Третья строка лирики
+```bash
+git clone https://github.com/akaAnger/lrc-sync-player.git
+cd lrc-sync-player
+pip install -r requirements.txt
 ```
 
-Формат времени: `[мм:сс.мс]`
+## Run with default names
 
-## Настройка параметров
+Put these files in the project root:
 
-Отредактируйте файл `sync_player.py`, изменив параметры в функции `run()`:
+```text
+song.mp3
+lyrics.lrc
+```
 
-- `offset_sec`: Смещение времени (+ для задержки, - для ускорения)
-- `cps`: Скорость печатания (символов в секунду)
+Then run:
 
-## Устранение проблем
+```bash
+python sync_player.py
+```
 
-**Проблема**: Не найден аудио файл
-**Решение**: Убедитесь, что файл `song.mp3` находится в той же папке, что и скрипт
+## Run with custom files
 
-**Проблема**: Лирика не синхронизирована
-**Решение**: Настройте параметр `offset_sec` для точной синхронизации
+```bash
+python sync_player.py path/to/song.mp3 path/to/lyrics.lrc
+```
+
+## Fix timing
+
+If lyrics appear too late, use a negative offset:
+
+```bash
+python sync_player.py song.mp3 lyrics.lrc --offset -0.5
+```
+
+If lyrics appear too early, use a positive offset:
+
+```bash
+python sync_player.py song.mp3 lyrics.lrc --offset 0.5
+```
+
+## Change animation speed
+
+```bash
+python sync_player.py song.mp3 lyrics.lrc --cps 20
+```
+
+Disable animation:
+
+```bash
+python sync_player.py song.mp3 lyrics.lrc --cps 0
+```
+
+## LRC format
+
+```lrc
+[00:15.30]First lyric line
+[00:18.50]Second lyric line
+[00:22.10]Third lyric line
+```
+
+A sample file is available at `examples/lyrics.lrc`.
+
+## Run tests
+
+```bash
+python -m unittest discover -s tests
+```
