@@ -1,17 +1,17 @@
 # LRC Sync Player
 
-**LRC Sync Player** is a small Python terminal application for playing an audio file while displaying synchronized lyrics from an `.lrc` file.
+**LRC Sync Player** is a small Python terminal app for playing local audio while showing synchronized lyrics from an `.lrc` file.
 
-The project is focused on a simple, readable implementation of timestamp-based lyric playback: audio is handled with `pygame`, while terminal output and text animation are handled with `rich`.
+It is intentionally compact: audio playback is handled by `pygame`, terminal output by `rich`, and the LRC parser is kept readable enough to use as a learning/reference project.
 
 ## Features
 
-- Play local MP3 audio files.
-- Parse `.lrc` lyrics with timestamps.
-- Display the current lyric line in sync with playback.
-- Animate lyrics with a configurable typewriter effect.
-- Apply a manual sync offset when lyrics are slightly early or late.
-- Render formatted terminal output with `rich`.
+- Play local audio files supported by `pygame`.
+- Parse timestamped `.lrc` lyrics.
+- Show lyric lines in sync with playback.
+- Configure sync offset from the command line.
+- Enable or disable typewriter-style lyric animation.
+- Run parser tests with the standard Python test runner.
 
 ## Tech stack
 
@@ -22,69 +22,82 @@ The project is focused on a simple, readable implementation of timestamp-based l
 
 ## Installation
 
-Clone the repository:
-
 ```bash
-git clone https://github.com/akaAnger/1337-5yn6.git
-cd 1337-5yn6
-```
-
-Install dependencies:
-
-```bash
+git clone https://github.com/akaAnger/lrc-sync-player.git
+cd lrc-sync-player
 pip install -r requirements.txt
 ```
 
 ## Usage
 
-Place your files in the project directory:
+Default file names:
+
+```bash
+python sync_player.py
+```
+
+This expects:
 
 ```text
 song.mp3
 lyrics.lrc
 ```
 
-Run the player:
+Custom paths:
 
 ```bash
-python sync_player.py
+python sync_player.py path/to/song.mp3 path/to/lyrics.lrc
 ```
 
-## LRC format
+Adjust lyric timing:
+
+```bash
+python sync_player.py song.mp3 lyrics.lrc --offset -0.5
+```
+
+Disable typewriter animation:
+
+```bash
+python sync_player.py song.mp3 lyrics.lrc --cps 0
+```
+
+Show all options:
+
+```bash
+python sync_player.py --help
+```
+
+## LRC example
 
 ```lrc
-[00:15.30]First lyric line
-[00:18.50]Second lyric line
-[00:22.10]Third lyric line
+[00:00.00]LRC Sync Player example
+[00:03.50]Put your own timestamped lyrics here
+[00:07.00]Run the player with your audio file
 ```
 
-## Configuration
+A sample file is included in `examples/lyrics.lrc`.
 
-The player supports the following runtime parameters in code:
+## Tests
 
-| Parameter | Purpose |
-| --- | --- |
-| `audio_path` | Path to the local audio file. |
-| `lrc_path` | Path to the `.lrc` lyrics file. |
-| `offset_sec` | Manual sync offset in seconds. |
-| `cps` | Typewriter animation speed in characters per second. |
+```bash
+python -m unittest discover -s tests
+```
 
 ## Project scope
 
 This is a compact utility and learning project. It is useful as a reference for:
 
 - parsing timestamped text files;
-- synchronizing UI output with audio playback;
-- building terminal interfaces with `rich`;
+- synchronizing terminal output with audio playback;
+- building simple CLI tools;
 - working with local media playback in Python.
 
 ## Roadmap
 
-- Add command-line arguments for file paths and offset.
 - Add pause/resume controls.
-- Add support for more audio formats where available through `pygame`.
-- Add tests for LRC parsing and timestamp matching.
-- Rename the repository to a clearer name, for example `lrc-sync-player`.
+- Add a small terminal progress indicator.
+- Add optional plain-text mode for environments without rich output.
+- Add packaging metadata for installing as a console command.
 
 ## License
 
