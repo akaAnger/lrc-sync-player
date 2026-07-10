@@ -15,7 +15,7 @@ It is intentionally compact: audio playback is handled by `pygame`, terminal out
 
 ## Tech stack
 
-- Python 3.7+
+- Python 3.10+
 - pygame
 - rich
 - LRC timestamp format
