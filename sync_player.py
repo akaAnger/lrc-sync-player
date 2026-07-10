@@ -66,13 +66,19 @@ def _fraction_to_seconds(value: str | None) -> float:
     return int(value[:3]) / 1000
 
 
-def type_line(text: str, cps: float = 35) -> None:
-    """Print a lyric line with a typewriter effect."""
-    if cps <= 0:
+def type_line(text: str, cps: float = 35, max_duration: float | None = None) -> None:
+    """Print a lyric line without allowing animation to delay the next line."""
+    if cps <= 0 or not text:
         console.print(Text(text, style="yellow"))
         return
 
     delay = 1.0 / cps
+    if max_duration is not None:
+        if max_duration <= 0:
+            console.print(Text(text, style="yellow"))
+            return
+        delay = min(delay, max_duration / len(text))
+
     output = Text(style="yellow")
 
     for character in text:
@@ -124,6 +130,21 @@ def clear_screen() -> None:
     console.clear()
 
 
+def wait_until(target: float, started_at: float) -> None:
+    """Wait for a timestamp while detecting unexpectedly ended playback."""
+    while True:
+        remaining = target - (time.perf_counter() - started_at)
+        if remaining <= 0:
+            return
+
+        if not pygame.mixer.music.get_busy():
+            raise PlayerError(
+                "Audio playback ended before all lyric timestamps were reached."
+            )
+
+        time.sleep(min(0.01, remaining))
+
+
 def run(audio_path: Path, lrc_path: Path, offset: float = 0.0, cps: float = 35) -> int:
     """Run synchronized audio and lyric playback."""
     try:
@@ -139,22 +160,16 @@ def run(audio_path: Path, lrc_path: Path, offset: float = 0.0, cps: float = 35) 
     try:
         started_at = start_audio(audio_path)
 
-        for timestamp, line in lyrics:
+        for index, (timestamp, line) in enumerate(lyrics):
             target = timestamp + offset
+            wait_until(target, started_at)
 
-            while True:
-                remaining = target - (time.perf_counter() - started_at)
-                if remaining <= 0:
-                    break
+            animation_window = None
+            if index + 1 < len(lyrics):
+                next_timestamp = lyrics[index + 1][0] + offset
+                animation_window = max(0.0, next_timestamp - target - 0.02)
 
-                if not pygame.mixer.music.get_busy():
-                    raise PlayerError(
-                        "Audio playback ended before all lyric timestamps were reached."
-                    )
-
-                time.sleep(min(0.01, remaining))
-
-            type_line(line, cps=cps)
+            type_line(line, cps=cps, max_duration=animation_window)
 
         while pygame.mixer.music.get_busy():
             time.sleep(0.05)
