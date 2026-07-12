@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lrc-sync-player"
+version = "0.1.0"
+description = "A small terminal player for local audio with synchronized LRC lyrics."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [{ name = "akaAnger" }]
+dependencies = [
+    "pygame>=2.0.0",
+    "rich>=10.0.0",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Multimedia :: Sound/Audio :: Players",
+]
+
+[project.scripts]
+lrc-sync-player = "sync_player:main"
+
+[project.urls]
+Repository = "https://github.com/akaAnger/lrc-sync-player"
+Issues = "https://github.com/akaAnger/lrc-sync-player/issues"
+
+[tool.setuptools]
+py-modules = ["sync_player"]
