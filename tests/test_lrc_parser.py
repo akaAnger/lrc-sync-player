@@ -2,7 +2,7 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from sync_player import parse_lrc
+from sync_player import PlayerError, parse_lrc
 
 
 class ParseLrcTest(unittest.TestCase):
@@ -57,6 +57,12 @@ class ParseLrcTest(unittest.TestCase):
         path = self.write_lrc("[00:00.00]Start\n", encoding="utf-8-sig")
 
         self.assertEqual(parse_lrc(path), [(0.0, "Start")])
+
+    def test_missing_file_raises_player_error(self):
+        missing_path = self.root / "missing.lrc"
+
+        with self.assertRaisesRegex(PlayerError, "Could not read LRC file"):
+            parse_lrc(missing_path)
 
 
 if __name__ == "__main__":
