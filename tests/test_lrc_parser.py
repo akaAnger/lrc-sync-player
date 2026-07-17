@@ -48,6 +48,16 @@ class ParseLrcTest(unittest.TestCase):
 
         self.assertEqual(parse_lrc(path), [(1.0, "Hello")])
 
+    def test_apply_positive_offset_metadata(self):
+        path = self.write_lrc("[offset:+500]\n[00:01.00]Delayed\n")
+
+        self.assertEqual(parse_lrc(path), [(1.5, "Delayed")])
+
+    def test_apply_negative_offset_regardless_of_tag_position(self):
+        path = self.write_lrc("[00:01.00]Earlier\n[offset:-250]\n")
+
+        self.assertEqual(parse_lrc(path), [(0.75, "Earlier")])
+
     def test_sort_lines_by_timestamp(self):
         path = self.write_lrc("[00:05.00]Later\n[00:01.00]Earlier\n")
 
