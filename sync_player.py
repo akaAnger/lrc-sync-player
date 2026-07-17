@@ -13,6 +13,7 @@ from rich.text import Text
 
 console = Console()
 TIMESTAMP = re.compile(r"\[(\d{1,3}):([0-5]\d)(?:[.:](\d{1,3}))?\]")
+OFFSET = re.compile(r"^\[offset:([+-]?\d+)\]$", re.IGNORECASE)
 
 
 class PlayerError(RuntimeError):
@@ -27,8 +28,15 @@ def parse_lrc(path: Path) -> List[Tuple[float, str]]:
         raise PlayerError(f"Could not read LRC file: {path}") from exc
 
     lines: List[Tuple[float, str]] = []
+    offset_seconds = 0.0
 
     for raw in raw_lines:
+        if offset_match := OFFSET.match(raw.strip()):
+            offset_seconds = int(offset_match.group(1)) / 1000
+
+    for raw in raw_lines:
+        if OFFSET.match(raw.strip()):
+            continue
         timestamps = []
         cursor = 0
 
@@ -50,7 +58,7 @@ def parse_lrc(path: Path) -> List[Tuple[float, str]]:
                 + int(seconds)
                 + _fraction_to_seconds(fraction)
             )
-            lines.append((timestamp, lyric))
+            lines.append((timestamp + offset_seconds, lyric))
 
     return sorted(lines, key=lambda item: item[0])
 
