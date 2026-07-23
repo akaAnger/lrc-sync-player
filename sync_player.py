@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import math
 import re
 import sys
 import time
@@ -195,6 +196,27 @@ def run(audio_path: Path, lrc_path: Path, offset: float = 0.0, cps: float = 35) 
         stop_audio()
 
 
+def finite_float(value: str) -> float:
+    """Parse a finite floating-point CLI value."""
+    try:
+        parsed = float(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError(f"expected a number, got {value!r}") from exc
+
+    if not math.isfinite(parsed):
+        raise argparse.ArgumentTypeError("value must be finite")
+
+    return parsed
+
+
+def nonnegative_float(value: str) -> float:
+    """Parse a finite floating-point CLI value greater than or equal to zero."""
+    parsed = finite_float(value)
+    if parsed < 0:
+        raise argparse.ArgumentTypeError("value must be greater than or equal to zero")
+    return parsed
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Play local audio while showing synchronized lyrics from an LRC file."
@@ -203,13 +225,13 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("lyrics", nargs="?", default="lyrics.lrc", help="Path to the LRC file.")
     parser.add_argument(
         "--offset",
-        type=float,
+        type=finite_float,
         default=0.0,
         help="Manual sync offset in seconds. Use negative values when lyrics are late.",
     )
     parser.add_argument(
         "--cps",
-        type=float,
+        type=nonnegative_float,
         default=35,
         help="Typewriter speed in characters per second. Use 0 to disable animation.",
     )
