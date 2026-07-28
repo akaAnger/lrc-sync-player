@@ -48,9 +48,9 @@ def parse_lrc(path: Path) -> List[Tuple[float, str]]:
         if not timestamps:
             continue
 
+        # Empty timestamped lines are meaningful in LRC files: they clear or
+        # visually separate the previously displayed lyric at an exact time.
         lyric = raw[cursor:].strip()
-        if not lyric:
-            continue
 
         for match in timestamps:
             minutes, seconds, fraction = match.groups()

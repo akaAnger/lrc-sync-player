@@ -41,12 +41,25 @@ class ParseLrcTest(unittest.TestCase):
             [(1.5, "Tenths"), (2.25, "Hundredths"), (3.125, "Milliseconds")],
         )
 
-    def test_skip_metadata_invalid_timestamps_and_empty_lines(self):
+    def test_skip_metadata_plain_text_and_invalid_timestamps(self):
         path = self.write_lrc(
-            "[ar:Artist]\n[00:01.00]Hello\n[00:02.00]   \n[00:99.00]Invalid\nplain text\n"
+            "[ar:Artist]\n[00:01.00]Hello\n[00:99.00]Invalid\nplain text\n"
         )
 
         self.assertEqual(parse_lrc(path), [(1.0, "Hello")])
+
+    def test_preserve_timestamped_empty_line(self):
+        path = self.write_lrc("[00:01.00]Hello\n[00:02.00]   \n[00:03.00]World\n")
+
+        self.assertEqual(
+            parse_lrc(path),
+            [(1.0, "Hello"), (2.0, ""), (3.0, "World")],
+        )
+
+    def test_preserve_empty_line_with_multiple_timestamps(self):
+        path = self.write_lrc("[00:02.00][00:04.00]\n")
+
+        self.assertEqual(parse_lrc(path), [(2.0, ""), (4.0, "")])
 
     def test_apply_positive_offset_metadata(self):
         path = self.write_lrc("[offset:+500]\n[00:01.00]Delayed\n")
