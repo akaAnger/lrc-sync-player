@@ -76,6 +76,24 @@ class ParseLrcTest(unittest.TestCase):
 
         self.assertEqual(parse_lrc(path), [(1.0, "Earlier"), (5.0, "Later")])
 
+    def test_preserve_source_order_for_equal_timestamps(self):
+        path = self.write_lrc(
+            "[00:02.00]First layer\n"
+            "[00:01.00]Earlier\n"
+            "[00:02.00]Second layer\n"
+            "[00:02.00]Third layer\n"
+        )
+
+        self.assertEqual(
+            parse_lrc(path),
+            [
+                (1.0, "Earlier"),
+                (2.0, "First layer"),
+                (2.0, "Second layer"),
+                (2.0, "Third layer"),
+            ],
+        )
+
     def test_read_utf8_bom(self):
         path = self.write_lrc("[00:00.00]Start\n", encoding="utf-8-sig")
 
