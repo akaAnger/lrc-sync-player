@@ -1,0 +1,67 @@
+name: Bug report
+description: Report a reproducible problem with playback, LRC parsing, or the CLI.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a problem. Please avoid uploading copyrighted audio; a minimal LRC snippet or synthetic example is enough for most bugs.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Describe the behavior you saw and what you expected instead.
+      placeholder: Tell us what went wrong and what you expected.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Include the command you ran and a minimal LRC snippet when relevant.
+      placeholder: |
+        1. Run `lrc-sync-player ...`
+        2. Use this LRC snippet: ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: LRC Sync Player version or commit
+      placeholder: e.g. 0.1.0 or commit SHA
+    validations:
+      required: true
+  - type: input
+    id: python
+    attributes:
+      label: Python version
+      placeholder: e.g. 3.12.4
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: e.g. Windows 11, Ubuntu 24.04, macOS 15
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Playback / audio
+        - LRC parsing / timing
+        - CLI / arguments
+        - Installation / packaging
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error output or logs
+      description: Paste the smallest relevant traceback or terminal output. Remove personal paths or other sensitive data if needed.
+      render: shell
