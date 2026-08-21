@@ -1,0 +1,37 @@
+name: Feature request
+description: Suggest a focused improvement to LRC Sync Player.
+title: "[Feature]: "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: What are you trying to do, and what is difficult today?
+      placeholder: Describe the concrete use case first.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed improvement
+      description: Describe the smallest useful change that would solve the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Optional. Mention workarounds or other approaches you tried.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Playback / audio
+        - LRC parsing / timing
+        - CLI / arguments
+        - Installation / packaging
+        - Documentation
+        - Other
+    validations:
+      required: true
