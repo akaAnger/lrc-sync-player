@@ -99,6 +99,13 @@ class ParseLrcTest(unittest.TestCase):
 
         self.assertEqual(parse_lrc(path), [(0.0, "Start")])
 
+    def test_invalid_utf8_raises_player_error(self):
+        path = self.root / "lyrics.lrc"
+        path.write_bytes(b"[00:00.00]\xff\xfe\n")
+
+        with self.assertRaisesRegex(PlayerError, "Could not read LRC file"):
+            parse_lrc(path)
+
     def test_missing_file_raises_player_error(self):
         missing_path = self.root / "missing.lrc"
 
