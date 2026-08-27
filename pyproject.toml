@@ -7,7 +7,7 @@ name = "lrc-sync-player"
 version = "0.1.0"
 description = "A small terminal player for local audio with synchronized LRC lyrics."
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.10,<3.14"
 license = { file = "LICENSE" }
 authors = [{ name = "akaAnger" }]
 dependencies = [
