@@ -19,7 +19,7 @@ The project is intentionally small and readable: `pygame` handles audio playback
 
 ## Requirements
 
-- Python 3.10+
+- Python 3.10–3.13
 - A working audio output device
 - Audio files supported by the installed `pygame`/SDL build
 

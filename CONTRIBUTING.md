@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for helping improve LRC Sync Player. Keep changes focused, easy to review, and compatible with Python 3.10+.
+Thanks for helping improve LRC Sync Player. Keep changes focused, easy to review, and compatible with Python 3.10–3.13.
 
 ## Local setup
 
