@@ -71,6 +71,16 @@ class ParseLrcTest(unittest.TestCase):
 
         self.assertEqual(parse_lrc(path), [(0.75, "Earlier")])
 
+    def test_last_valid_offset_wins_when_multiple_tags_exist(self):
+        path = self.write_lrc(
+            "[offset:+500]\n"
+            "[offset:not-a-number]\n"
+            "[00:01.00]Adjusted\n"
+            "[offset:-250]\n"
+        )
+
+        self.assertEqual(parse_lrc(path), [(0.75, "Adjusted")])
+
     def test_sort_lines_by_timestamp(self):
         path = self.write_lrc("[00:05.00]Later\n[00:01.00]Earlier\n")
 
