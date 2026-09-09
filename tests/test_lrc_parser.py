@@ -23,6 +23,11 @@ class ParseLrcTest(unittest.TestCase):
 
         self.assertEqual(parse_lrc(path), [(1.5, "First line"), (3.0, "Second line")])
 
+    def test_parse_leading_whitespace_before_timestamps(self):
+        path = self.write_lrc("  [00:01.00]Indented\n\t[00:02.50]Tabbed\n")
+
+        self.assertEqual(parse_lrc(path), [(1.0, "Indented"), (2.5, "Tabbed")])
+
     def test_parse_multiple_timestamps_for_one_line(self):
         path = self.write_lrc("[00:01.00][00:05.25]Repeated chorus\n")
 
