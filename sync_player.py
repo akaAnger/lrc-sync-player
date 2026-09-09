@@ -39,7 +39,7 @@ def parse_lrc(path: Path) -> List[Tuple[float, str]]:
         if OFFSET.match(raw.strip()):
             continue
         timestamps = []
-        cursor = 0
+        cursor = len(raw) - len(raw.lstrip())
 
         while match := TIMESTAMP.match(raw, cursor):
             timestamps.append(match)
