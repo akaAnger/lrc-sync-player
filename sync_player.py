@@ -148,90 +148,99 @@ def wait_until(target: float, started_at: float) -> None:
 
         if not pygame.mixer.music.get_busy():
             raise PlayerError(
-                "Audio playback ended before all timestamped lyrics were shown."
+                "Audio playback ended before all lyric timestamps were reached."
             )
 
-        time.sleep(min(remaining, 0.05))
+        time.sleep(min(0.01, remaining))
 
 
-def play_lyrics(
-    lyrics: List[Tuple[float, str]],
-    started_at: float,
-    offset: float = 0.0,
-    cps: float = 35,
-) -> None:
-    for index, (timestamp, lyric) in enumerate(lyrics):
-        target = timestamp + offset
-        wait_until(target, started_at)
+def run(audio_path: Path, lrc_path: Path, offset: float = 0.0, cps: float = 35) -> int:
+    """Run synchronized audio and lyric playback."""
+    try:
+        lyrics = validate_inputs(audio_path, lrc_path)
+    except PlayerError as exc:
+        console.print(Text(str(exc), style="red"))
+        return 1
 
-        next_target = None
-        if index + 1 < len(lyrics):
-            next_target = lyrics[index + 1][0] + offset
+    clear_screen()
+    console.print("\n[bold bright_cyan]LRC Sync Player[/bold bright_cyan]")
+    console.print("[dim]Starting playback...[/dim]\n")
 
-        max_duration = None
-        if next_target is not None:
-            max_duration = max(0.0, next_target - target)
+    try:
+        started_at = start_audio(audio_path)
 
-        clear_screen()
-        type_line(lyric, cps=cps, max_duration=max_duration)
+        for index, (timestamp, line) in enumerate(lyrics):
+            target = timestamp + offset
+            wait_until(target, started_at)
+
+            animation_window = None
+            if index + 1 < len(lyrics):
+                next_timestamp = lyrics[index + 1][0] + offset
+                animation_window = max(0.0, next_timestamp - target - 0.02)
+
+            type_line(line, cps=cps, max_duration=animation_window)
+
+        while pygame.mixer.music.get_busy():
+            time.sleep(0.05)
+
+        console.print("\n[bold bright_magenta]Playback finished.[/bold bright_magenta]\n")
+        return 0
+
+    except PlayerError as exc:
+        console.print(Text(f"\n{exc}", style="red"))
+        return 1
+    except KeyboardInterrupt:
+        console.print("\n[yellow]Playback interrupted by user.[/yellow]")
+        return 130
+    finally:
+        stop_audio()
 
 
 def finite_float(value: str) -> float:
-    parsed = float(value)
+    """Parse a finite floating-point CLI value."""
+    try:
+        parsed = float(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError(f"expected a number, got {value!r}") from exc
+
     if not math.isfinite(parsed):
-        raise argparse.ArgumentTypeError("must be a finite number")
+        raise argparse.ArgumentTypeError("value must be finite")
+
     return parsed
 
 
 def nonnegative_float(value: str) -> float:
+    """Parse a finite floating-point CLI value greater than or equal to zero."""
     parsed = finite_float(value)
     if parsed < 0:
-        raise argparse.ArgumentTypeError("must be zero or greater")
+        raise argparse.ArgumentTypeError("value must be greater than or equal to zero")
     return parsed
 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Play an audio file while printing synchronized LRC lyrics."
+        description="Play local audio while showing synchronized lyrics from an LRC file."
     )
-    parser.add_argument("audio", nargs="?", type=Path, help="Path to the audio file")
-    parser.add_argument("lrc", nargs="?", type=Path, help="Path to the .lrc file")
+    parser.add_argument("audio", nargs="?", default="song.mp3", help="Path to the audio file.")
+    parser.add_argument("lyrics", nargs="?", default="lyrics.lrc", help="Path to the LRC file.")
     parser.add_argument(
         "--offset",
         type=finite_float,
         default=0.0,
-        help="Additional lyric offset in seconds (default: 0)",
+        help="Manual sync offset in seconds. Use negative values when lyrics are late.",
     )
     parser.add_argument(
         "--cps",
         type=nonnegative_float,
-        default=35.0,
-        help="Typing speed in characters per second; 0 prints instantly (default: 35)",
+        default=35,
+        help="Typewriter speed in characters per second. Use 0 to disable animation.",
     )
     return parser
 
 
-def main(argv: List[str] | None = None) -> int:
-    parser = build_parser()
-    args = parser.parse_args(argv)
-
-    if args.audio is None or args.lrc is None:
-        parser.print_help()
-        return 0
-
-    try:
-        lyrics = validate_inputs(args.audio, args.lrc)
-        started_at = start_audio(args.audio)
-        play_lyrics(lyrics, started_at, offset=args.offset, cps=args.cps)
-    except (PlayerError, KeyboardInterrupt) as exc:
-        if isinstance(exc, PlayerError):
-            console.print(f"[red]{exc}[/red]")
-            return 1
-        return 130
-    finally:
-        stop_audio()
-
-    return 0
+def main(argv: list[str] | None = None) -> int:
+    args = build_parser().parse_args(argv)
+    return run(Path(args.audio), Path(args.lyrics), offset=args.offset, cps=args.cps)
 
 
 if __name__ == "__main__":
