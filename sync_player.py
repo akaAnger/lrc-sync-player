@@ -13,7 +13,7 @@ from rich.console import Console
 from rich.text import Text
 
 console = Console()
-TIMESTAMP = re.compile(r"\[(\d{1,3}):([0-5]\d)(?:[.:](\d{1,3}))?\]")
+TIMESTAMP = re.compile(r"[ \t]*\[(\d{1,3}):([0-5]\d)(?:[.:](\d{1,3}))?\]")
 OFFSET = re.compile(r"^\[offset:([+-]?\d+)\]$", re.IGNORECASE)
 
 
