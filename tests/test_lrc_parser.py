@@ -36,6 +36,14 @@ class ParseLrcTest(unittest.TestCase):
             [(1.0, "Repeated chorus"), (5.25, "Repeated chorus")],
         )
 
+    def test_parse_multiple_timestamps_separated_by_whitespace(self):
+        path = self.write_lrc("[00:01.00] [00:05.25]\tRepeated chorus\n")
+
+        self.assertEqual(
+            parse_lrc(path),
+            [(1.0, "Repeated chorus"), (5.25, "Repeated chorus")],
+        )
+
     def test_parse_fraction_lengths_and_colon_separator(self):
         path = self.write_lrc(
             "[00:01.5]Tenths\n[00:02.25]Hundredths\n[00:03:125]Milliseconds\n"
