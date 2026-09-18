@@ -9,6 +9,7 @@ The project is intentionally small and readable: `pygame` handles audio playback
 - Play local audio formats supported by `pygame`.
 - Parse standard timestamped `.lrc` lyrics.
 - Support multiple timestamps on one lyric line.
+- Apply standard `[offset:+/-milliseconds]` LRC metadata.
 - Read UTF-8 and UTF-8 BOM lyric files.
 - Show lyric lines in sync with playback.
 - Adjust synchronization with a command-line offset.
@@ -96,6 +97,7 @@ lrc-sync-player --help
 ## LRC example
 
 ```lrc
+[offset:-250]
 [00:00.00]LRC Sync Player example
 [00:03.50]Put your own timestamped lyrics here
 [00:07.00][00:20.00]This line appears twice
@@ -112,7 +114,7 @@ Supported timestamps include:
 [mm:ss:xx]
 ```
 
-Metadata lines such as `[ar:Artist]` are ignored.
+The optional `[offset:+/-milliseconds]` metadata tag shifts every lyric timestamp in the file. For example, `[offset:-250]` displays each lyric 250 ms earlier. If more than one valid offset tag is present, the last one is used. Other metadata lines such as `[ar:Artist]` are ignored.
 
 ## Tests
 
